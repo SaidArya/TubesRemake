@@ -36,7 +36,7 @@ struct list {
 
 
 void createList(list &List);
-void showDataEvent(list List);
+void showDataEventAll(list List);
 void registrasiPeserta(list &List, addressPeserta &P);
 addressPeserta newElementPeserta(peserta info);
 void insertLastPeserta(list &List, addressPeserta P);
@@ -51,8 +51,16 @@ void hapusEvent(list &List, string namaEvent);
 void deleteFirstEvent(list &List);
 void deleteLastEvent(list &List);
 void deleteAfterEvent(addressEvent &prec, addressEvent &E);
+int jumlahPeserta(addressEvent E);
+void showEventTersedia(list List);
 
 int menu(list &List, addressPeserta P);
 void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
 
 #endif /* EVENT_H */
+
+/**
+    *TODO: hapus registrasi
+    *TODO: Masuk Event
+    *TODO: Mencari peserta di sebuah event
+ **/
