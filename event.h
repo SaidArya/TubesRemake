@@ -17,6 +17,7 @@ struct event {
 struct peserta {
     string namaPeserta, emailPeserta, jenisPeserta;
     int noPeserta, noTelepon, noTempatDuduk;
+    bool checkIn;
 };
 struct elementEvent {
     event info;
@@ -61,6 +62,7 @@ void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
 
 /**
     *TODO: hapus registrasi
-    *TODO: Masuk Event
+    *TODO: Masuk Event (checkIn)
     *TODO: Mencari peserta di sebuah event
+    *TODO: akhiri event
  **/
