@@ -244,6 +244,7 @@ void findPeserta(list List, string nama, addressPeserta &P) {
 void registrasiEvent(list &List, addressEvent &E, addressPeserta &P) {
     addressPeserta Q = newElementPeserta(P->info);
     cout << "Jenis peserta (reguler/VIP) : "; cin >>Q->info.jenisPeserta;
+    Q->info.checkIn = false;
     Q->info.noPeserta = (rand() % 1000000) + 1;
     Q->info.noTempatDuduk = (rand() % E->info.quota) + 1;
     insertLastPesertaEvent(E, Q);
