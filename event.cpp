@@ -6,20 +6,37 @@ void createList(list &List) {
     List.firstPeserta = NULL;
 }
 
-void showDataEvent(list List) {
+void showDataEventAll(list List) {
+    char select;
     cout << "Data event" << endl;
     if (List.first == NULL) {
         cout << "Kosong" << endl;
     } else {
+        cout << "Tampilkan peserta ? (Y/N) : "; select = getche();
         addressEvent E = List.first;
         while (E != NULL) {
-            addressPeserta P = E->nextPeserta;
-            cout << E->info.namaEvent << " ";
-            while (P != NULL) {
-                cout << P->info.namaPeserta << " ";
-                P = P->next;
-            }
             cout << endl;
+            cout << "Nama event  : " << E->info.namaEvent << endl;
+            cout << "Jenis event : " << E->info.jenisEvent << endl;
+            cout << "Tempat event: " << E->info.tempatEvent << endl;
+            cout << "tanggalEvent: " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl;
+            if (tolower(select) == 'y'){
+                cout << "Peserta Event" << endl << endl;
+                addressPeserta P = E->nextPeserta;
+                if (P == NULL) {
+                    cout << "Kosong" << endl;
+                } else {
+                    while (P != NULL) {
+                    cout << "Nama peserta : " << P->info.namaPeserta << endl;
+                    cout << "Email peserta: " << P->info.emailPeserta << endl;
+                    cout << "Jenis peserta: " << P->info.jenisPeserta << endl;
+                    cout << "No. Telepon  : " << P->info.noTelepon << endl;
+                    cout << "No. peserta  : " << P->info.noPeserta << endl;
+                    cout << "No. Duduk    : " << P->info.noTempatDuduk << endl << endl;
+                    P = P->next;
+                    }
+                }
+            }
             E = E->next;
         }
     }
@@ -64,7 +81,7 @@ void registrasiPeserta(list &List, addressPeserta &P) {
         cout << "Email : "; cin >> Peserta.emailPeserta;
         cout << "No. HP: "; cin >> Peserta.noTelepon;
         cout << "\n Data sudah benar (Y/N) : "; ulang = getche();
-        if (ulang == 'y') {
+        if (tolower(ulang) == 'y') {
             P = newElementPeserta(Peserta);
             insertLastPeserta(List, P);
         }
@@ -171,9 +188,11 @@ int menu(list &List, addressPeserta P) {
                 cout << "Event tidak ditemukan" << endl;
             }
             break;
-
+        case 4: 
+            showEventTersedia(List);
+            break;
         case 9:
-            showDataEvent(List);
+            showDataEventAll(List);
             break;
     }
     return iMenu;
@@ -224,9 +243,10 @@ void findPeserta(list List, string nama, addressPeserta &P) {
 
 void registrasiEvent(list &List, addressEvent &E, addressPeserta &P) {
     addressPeserta Q = newElementPeserta(P->info);
+    cout << "Jenis peserta (reguler/VIP) : "; cin >>Q->info.jenisPeserta;
     Q->info.noPeserta = (rand() % 1000000) + 1;
     Q->info.noTempatDuduk = (rand() % E->info.quota) + 1;
-    insertLastPesertaEvent(E, P);
+    insertLastPesertaEvent(E, Q);
 }
 void insertLastPesertaEvent(addressEvent &E, addressPeserta &P) {
     addressPeserta Q = E->nextPeserta;
@@ -285,4 +305,35 @@ void deleteAfterEvent(addressEvent &prec, addressEvent &E) {
     E->next->prev = prec;
     E->next = NULL;
     E->prev = NULL;
+}
+
+int jumlahPeserta(addressEvent E) {
+    int nPeserta = 0;
+    addressPeserta P = E->nextPeserta;
+    while (P != NULL) {
+        nPeserta++;
+        P = P->next;
+    }
+    return nPeserta;
+}
+
+void showEventTersedia(list List) {
+    int i = 0;
+    addressEvent E = List.first;
+    while (E != NULL) {
+        if (jumlahPeserta(E) < E->info.quota) {
+            cout << endl;
+            cout << "Nama event  : " << E->info.namaEvent << endl;
+            cout << "Jenis event : " << E->info.jenisEvent << endl;
+            cout << "Tempat event: " << E->info.tempatEvent << endl;
+            cout << "tanggalEvent: " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl;
+            cout << "Kuota Maks  : " << E->info.quota << endl;
+            cout << "Sisa kursi  : " << (E->info.quota - jumlahPeserta(E)) << endl;
+            i++;
+        }
+        E = E->next;
+    }
+    if (i == 0) {
+        cout << "Kosong" << endl;
+    }
 }
