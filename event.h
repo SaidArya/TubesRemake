@@ -62,6 +62,7 @@ void deletePeserta(addressEvent &E, addressPeserta &P);
 bool cekKursi(addressEvent E, int i);
 int menu(list &List, addressPeserta P);
 void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
+void checkInStatus(list &List, addressPeserta P, string namaEvent);
 
 #endif /* EVENT_H */
 
@@ -70,5 +71,5 @@ void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
     *TODO: Masuk Event (checkIn)
     *TODO: Mencari peserta di sebuah event
     *TODO: akhiri event
-    *TODO: Batalkan registrasi event
+    // *TODO: Batalkan registrasi event
  **/
