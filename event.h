@@ -12,7 +12,8 @@ struct tanggal {
 struct event {
     string namaEvent, jenisEvent, tempatEvent;
     tanggal tanggalEvent;
-    int quota, nPeserta;
+    int quota;
+    bool closed;
 };
 struct peserta {
     string namaPeserta, emailPeserta, jenisTiket;
@@ -37,7 +38,7 @@ struct list {
 
 
 void createList(list &List);
-void showDataEventAll(list List);
+void showDataAll(list List);
 void registrasiPeserta(list &List, addressPeserta &P);
 addressPeserta newElementPeserta(peserta info);
 void insertLastPeserta(list &List, addressPeserta P);
@@ -46,7 +47,7 @@ addressEvent newElementEvent(event info);
 void insertLastEvent(list &List, addressEvent E);
 void findPeserta(list List, string nama, addressPeserta &P);
 void registrasiEvent(list &List, addressEvent &E, addressPeserta &P);
-addressEvent findEvent(list &List, string namaEvent);
+addressEvent findEvent(list List, string namaEvent);
 void insertLastPesertaEvent(addressEvent &E, addressPeserta &P);
 void hapusEvent(list &List, string namaEvent);
 void deleteFirstEvent(list &List);
@@ -57,18 +58,24 @@ void showEventTersedia(list List);
 void cancelRegistrasiEvent(list &List, addressPeserta P);
 void deleteFirstPeserta(addressEvent &E);
 void deleteLastPeserta(addressEvent &E);
-void deleteAfterPeserta(addressPeserta &prec, addressPeserta &P);
-void deletePeserta(addressEvent &E, addressPeserta &P);
+void deleteAfterPeserta(addressPeserta prec, addressPeserta P);
+void deletePeserta(list &List, addressEvent &E, addressPeserta P);
 bool cekKursi(addressEvent E, int i);
 int menu(list &List, addressPeserta P);
 void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
 void checkInStatus(list &List, addressPeserta P, string namaEvent);
+void endRegistrasiEvent(list &List, addressEvent E);
+int waitingList(addressEvent E);
+int jumlahCheckin(addressEvent E);
+void showTicket(list List, addressPeserta P);
+void showAllEvent(list List);
+addressPeserta findPeserta(addressEvent E, string namaPeserta);
 
 #endif /* EVENT_H */
 
 /**
-    *TODO: hapus registrasi
-    *TODO: Masuk Event (checkIn)
+    // *TODO: hapus registrasi
+    // *TODO: Masuk Event (checkIn)
     *TODO: Mencari peserta di sebuah event
     *TODO: akhiri event
     // *TODO: Batalkan registrasi event
