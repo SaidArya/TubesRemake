@@ -32,7 +32,13 @@ void showDataEventAll(list List) {
                     cout << "Jenis peserta: " << P->info.jenisTiket << endl;
                     cout << "No. Telepon  : " << P->info.noTelepon << endl;
                     cout << "No. peserta  : " << P->info.noPeserta << endl;
-                    cout << "No. Duduk    : " << P->info.noTempatDuduk << endl << endl;
+                    cout << "No. Duduk    : " << P->info.noTempatDuduk << endl;
+                    cout << "Checkin      : ";
+                    if (P->info.checkIn == true) {
+                        cout << "Sudah check in" << endl << endl;
+                    } else {
+                        cout << "Belum check in" << endl << endl;
+                    }
                     P = P->next;
                     }
                 }
@@ -195,6 +201,30 @@ int menu(list &List, addressPeserta P) {
         case 5: 
             cancelRegistrasiEvent(List, P);
             break;
+        case 6: 
+            E = List.first;
+            while (E != NULL) {
+                addressPeserta Q = E->nextPeserta;
+                while (Q != NULL) {
+                    if (Q->info.namaPeserta == P->info.namaPeserta) {
+                        cout << "Nama Event     : " << E->info.namaEvent << endl;
+                        cout << "Tanggal Event  : " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl << endl;
+                        cout << "Status check in: ";
+                        if (Q->info.checkIn == true) {
+                            cout << "Sudah check in" << endl << endl;
+                        } else {
+                            cout << "Belum check in" << endl << endl;
+                        }
+                        break;
+                        }
+                    Q = Q->next;
+                }
+                E = E->next;
+            }
+            cin.ignore(1000, '\n');
+            cout << "Nama event : "; getline(cin, namaEvent);
+            checkInStatus(List, P, namaEvent);
+            break;
         case 9:
             showDataEventAll(List);
             break;
@@ -250,13 +280,13 @@ void registrasiEvent(list &List, addressEvent &E, addressPeserta &P) {
     int i = 0;
     cout << "Jenis peserta (reguler/VIP) : "; cin >>Q->info.jenisTiket;
     Q->info.checkIn = false;
-    
     Q->info.noPeserta = (rand() % 1000000) + 1;
     i = (rand() % E->info.quota) + 1;
     if (cekKursi(E, i)) {
         i = (rand() % E->info.quota) + 1;
     }
     Q->info.noTempatDuduk = i;
+    Q->info.checkIn = false;
     insertLastPesertaEvent(E, Q);
 }
 void insertLastPesertaEvent(addressEvent &E, addressPeserta &P) {
@@ -427,4 +457,20 @@ bool cekKursi(addressEvent E, int i) {
         P = P->next;
     }
     return duplicate;
+}
+
+void checkInStatus(list &List, addressPeserta P, string namaEvent) {
+    addressEvent E = findEvent(List, namaEvent);
+    if (E != NULL) {
+        addressPeserta Q = E->nextPeserta;
+        while (Q != NULL) {
+            if (Q->info.namaPeserta == P->info.namaPeserta) {
+                Q->info.checkIn = true;
+                break;
+            }
+            Q = Q->next;
+        }
+    } else {
+        cout << "Event tidak ditemukan" << endl;
+    }
 }
