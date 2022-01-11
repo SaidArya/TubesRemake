@@ -59,7 +59,7 @@ void deleteFirstPeserta(addressEvent &E);
 void deleteLastPeserta(addressEvent &E);
 void deleteAfterPeserta(addressPeserta &prec, addressPeserta &P);
 void deletePeserta(addressEvent &E, addressPeserta &P);
-
+bool cekKursi(addressEvent E, int i);
 int menu(list &List, addressPeserta P);
 void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
 
