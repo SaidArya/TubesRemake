@@ -169,8 +169,9 @@ int menu(list &List, addressPeserta P) {
             tambahEvent(List);
             break;
         case 2:
+            showEventTersedia(List);
             cin.ignore(1000, '\n');
-            cout << "Nama event : "; getline(cin, namaEvent);
+            cout << "\nNama event : "; getline(cin, namaEvent);
             E = findEvent(List, namaEvent);
             if (E != NULL) {
                 registrasiEvent(List, E, P);
@@ -246,10 +247,16 @@ void findPeserta(list List, string nama, addressPeserta &P) {
 
 void registrasiEvent(list &List, addressEvent &E, addressPeserta &P) {
     addressPeserta Q = newElementPeserta(P->info);
+    int i = 0;
     cout << "Jenis peserta (reguler/VIP) : "; cin >>Q->info.jenisTiket;
     Q->info.checkIn = false;
+    
     Q->info.noPeserta = (rand() % 1000000) + 1;
-    Q->info.noTempatDuduk = (rand() % E->info.quota) + 1;
+    i = (rand() % E->info.quota) + 1;
+    if (cekKursi(E, i)) {
+        i = (rand() % E->info.quota) + 1;
+    }
+    Q->info.noTempatDuduk = i;
     insertLastPesertaEvent(E, Q);
 }
 void insertLastPesertaEvent(addressEvent &E, addressPeserta &P) {
@@ -408,4 +415,16 @@ void deleteAfterPeserta(addressPeserta &prec, addressPeserta &P) {
     P->next->prev = prec;
     P->next = NULL;
     P->prev = NULL;
+}
+
+bool cekKursi(addressEvent E, int i) {
+    bool duplicate = false;
+    addressPeserta P = E->nextPeserta;
+    while (P != NULL) {
+        if (i == P->info.noTempatDuduk) {
+            duplicate = true;
+        }
+        P = P->next;
+    }
+    return duplicate;
 }
