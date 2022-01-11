@@ -15,7 +15,7 @@ struct event {
     int quota, nPeserta;
 };
 struct peserta {
-    string namaPeserta, emailPeserta, jenisPeserta;
+    string namaPeserta, emailPeserta, jenisTiket;
     int noPeserta, noTelepon, noTempatDuduk;
     bool checkIn;
 };
@@ -54,6 +54,11 @@ void deleteLastEvent(list &List);
 void deleteAfterEvent(addressEvent &prec, addressEvent &E);
 int jumlahPeserta(addressEvent E);
 void showEventTersedia(list List);
+void cancelRegistrasiEvent(list &List, addressPeserta P);
+void deleteFirstPeserta(addressEvent &E);
+void deleteLastPeserta(addressEvent &E);
+void deleteAfterPeserta(addressPeserta &prec, addressPeserta &P);
+void deletePeserta(addressEvent &E, addressPeserta &P);
 
 int menu(list &List, addressPeserta P);
 void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
@@ -65,4 +70,5 @@ void loginMenu(list &List, addressPeserta &P, bool &loggedIn);
     *TODO: Masuk Event (checkIn)
     *TODO: Mencari peserta di sebuah event
     *TODO: akhiri event
+    *TODO: Batalkan registrasi event
  **/
