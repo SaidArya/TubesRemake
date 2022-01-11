@@ -6,7 +6,7 @@ void createList(list &List) {
     List.firstPeserta = NULL;
 }
 
-void showDataEventAll(list List) {
+void showDataAll(list List) {
     char select;
     cout << "Data event" << endl;
     if (List.first == NULL) {
@@ -16,10 +16,13 @@ void showDataEventAll(list List) {
         addressEvent E = List.first;
         while (E != NULL) {
             cout << endl;
-            cout << "Nama event  : " << E->info.namaEvent << endl;
-            cout << "Jenis event : " << E->info.jenisEvent << endl;
-            cout << "Tempat event: " << E->info.tempatEvent << endl;
-            cout << "tanggalEvent: " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl;
+            cout << "Nama event    : " << E->info.namaEvent << endl;
+            cout << "Jenis event   : " << E->info.jenisEvent << endl;
+            cout << "Tempat event  : " << E->info.tempatEvent << endl;
+            cout << "tanggalEvent  : " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl;
+            cout << "jumlah peserta: " << jumlahPeserta(E) << endl; 
+            cout << "waiting list  : " << waitingList(E) << endl; 
+            cout << "Jumlah checkin: " << jumlahCheckin(E) << endl; 
             if (tolower(select) == 'y'){
                 cout << "Peserta Event" << endl << endl;
                 addressPeserta P = E->nextPeserta;
@@ -62,6 +65,7 @@ addressPeserta newElementPeserta(peserta info) {
     addressPeserta P = new elementPeserta;
     P->info = info;
     P->next = NULL;
+    P->prev = NULL;
     return P;
 }
 
@@ -167,8 +171,9 @@ void tambahEvent(list &List) {
 
 int menu(list &List, addressPeserta P) {
     int iMenu = 0;
-    string namaEvent;
+    string namaEvent, namaPeserta;
     addressEvent E;
+    addressPeserta aP;
     cin >> iMenu;
     switch (iMenu) {
         case 1:
@@ -225,14 +230,57 @@ int menu(list &List, addressPeserta P) {
             cout << "Nama event : "; getline(cin, namaEvent);
             checkInStatus(List, P, namaEvent);
             break;
+        case 7:
+            E = List.first;
+            while (E != NULL) {
+                cout << "Nama event : " << E->info.namaEvent << endl;
+                E = E->next;
+            }
+            cin.ignore(1000, '\n');
+            cout << "Nama event yang ingin ditutup : "; getline(cin, namaEvent);
+            addressEvent Z;
+            Z = findEvent(List, namaEvent);
+            endRegistrasiEvent(List, Z);
+            break;
+        case 8:
+            showTicket(List, P);
+            break;
         case 9:
-            showDataEventAll(List);
+            showDataAll(List);
+            break;
+        case 10:
+            showAllEvent(List);
+            break;
+        case 11:
+            addressEvent aE = List.first;
+            while (aE != NULL) {
+                cout << "Nama Event : " << aE->info.namaEvent << endl;
+                aE = aE->next;
+            }
+            cin.ignore(1000, '\n');
+            cout << "Masukkan nama event : "; getline(cin, namaEvent);
+            E = findEvent(List, namaEvent);
+            if (E != NULL) {
+                // cin.ignore(1000, '\n');
+                cout << "Masukkan nama peserta yang ingin dicari : "; getline(cin, namaPeserta);
+                aP = findPeserta(E, namaPeserta);
+                if (aP != NULL) {
+                    cout << "Nama       : " << aP->info.namaPeserta << endl;
+                    cout << "No telepon : " << aP->info.noTelepon << endl;
+                    cout << "Email      : " << aP->info.emailPeserta << endl;
+                    cout << "Jenis tiket: " << aP->info.jenisTiket << endl;
+                    cout << "No Peserta : " << aP->info.noPeserta<< endl;
+                    cout << "No Kursi   : " << aP->info.noTempatDuduk << endl;
+                } else {
+                    cout << "Data tidak ditemukan" << endl;
+                }
+            }
             break;
     }
     return iMenu;
 }
 
-addressEvent findEvent(list &List, string namaEvent) {
+addressEvent findEvent(list List, string namaEvent) {
     addressEvent E = List.first;
     while (E != NULL) {
         if (E->info.namaEvent == namaEvent) {
@@ -281,11 +329,15 @@ void registrasiEvent(list &List, addressEvent &E, addressPeserta &P) {
     cout << "Jenis peserta (reguler/VIP) : "; cin >>Q->info.jenisTiket;
     Q->info.checkIn = false;
     Q->info.noPeserta = (rand() % 1000000) + 1;
-    i = (rand() % E->info.quota) + 1;
-    if (cekKursi(E, i)) {
+    if (jumlahPeserta(E) < E->info.quota) {
         i = (rand() % E->info.quota) + 1;
+        while (cekKursi(E, i)) {
+            i = (rand() % E->info.quota) + 1;
+        }
+        Q->info.noTempatDuduk = i;
+    } else {
+        Q->info.noTempatDuduk = 0;
     }
-    Q->info.noTempatDuduk = i;
     Q->info.checkIn = false;
     insertLastPesertaEvent(E, Q);
 }
@@ -350,6 +402,9 @@ int jumlahPeserta(addressEvent E) {
         nPeserta++;
         P = P->next;
     }
+    if (nPeserta > E->info.quota) {
+        nPeserta = E->info.quota;
+    }
     return nPeserta;
 }
 
@@ -357,22 +412,21 @@ void showEventTersedia(list List) {
     int i = 0;
     addressEvent E = List.first;
     while (E != NULL) {
-        if (jumlahPeserta(E) < E->info.quota) {
-            cout << endl;
+        cout << endl;
+        if (E->info.closed == false && jumlahPeserta(E) < E->info.quota) {
             cout << "Nama event  : " << E->info.namaEvent << endl;
             cout << "Jenis event : " << E->info.jenisEvent << endl;
             cout << "Tempat event: " << E->info.tempatEvent << endl;
             cout << "tanggalEvent: " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl;
             cout << "Kuota Maks  : " << E->info.quota << endl;
             cout << "Sisa kursi  : " << (E->info.quota - jumlahPeserta(E)) << endl;
+            cout << "Waiting List: " << waitingList(E) << endl;
             i++;
         }
         E = E->next;
     }
-    if (i == 0) {
-        cout << "Kosong" << endl;
-    }
 }
+
 
 void cancelRegistrasiEvent(list &List, addressPeserta P) {
     string namaEvent;
@@ -392,30 +446,37 @@ void cancelRegistrasiEvent(list &List, addressPeserta P) {
     cin.ignore(1000, '\n');
     cout << "\n Masukkan nama event yang ingin dibatalkan : "; getline(cin, namaEvent);
     E = findEvent(List, namaEvent);
-            if (E != NULL) {
-                deletePeserta(E, P);
-            } else {
-                cout << "Event tidak ditemukan" << endl;
-            }
+    if (E != NULL) {
+        deletePeserta(List, E, P);
+    } else {
+        cout << "Event tidak ditemukan" << endl;
+    }
 }
 
-void deletePeserta(addressEvent &E, addressPeserta &P) {
-    addressPeserta Q = E->nextPeserta;
+void deletePeserta(list &List, addressEvent &E, addressPeserta P) {
+    cout << "deletepe " << endl;
+    addressPeserta Q = E->nextPeserta, Z;
+
+    int i = 0, nD = 0;
     while (Q != NULL) {
+        i++;
         if (Q->info.namaPeserta == P->info.namaPeserta) {
+            Z = Q;
+        }
+        if (i == E->info.quota) {
+            Q->next->info.noTempatDuduk = Z->info.noTempatDuduk;
             break;
         }
         Q = Q->next;
     }
-
-    if (Q == E->nextPeserta) {
+    if (Z == E->nextPeserta) {
         deleteFirstPeserta(E);
-    } else if (Q->next == NULL) {
+    } else if (Z->next == NULL) {
         deleteLastPeserta(E);
     } else {
-        addressPeserta prec = Q->prev;
-        deleteAfterPeserta(prec, P);
-    }
+        addressPeserta prec = Z->prev;
+        deleteAfterPeserta(prec, Z);
+    }    
 }
 
 void deleteFirstPeserta(addressEvent &E) {
@@ -440,7 +501,7 @@ void deleteLastPeserta(addressEvent &E) {
     }
 }
 
-void deleteAfterPeserta(addressPeserta &prec, addressPeserta &P) {
+void deleteAfterPeserta(addressPeserta prec, addressPeserta P) {
     prec->next = P->next;
     P->next->prev = prec;
     P->next = NULL;
@@ -463,7 +524,7 @@ void checkInStatus(list &List, addressPeserta P, string namaEvent) {
     addressEvent E = findEvent(List, namaEvent);
     if (E != NULL) {
         addressPeserta Q = E->nextPeserta;
-        while (Q != NULL) {
+        for (int i = 0; i < E->info.quota; i++) {
             if (Q->info.namaPeserta == P->info.namaPeserta) {
                 Q->info.checkIn = true;
                 break;
@@ -473,4 +534,97 @@ void checkInStatus(list &List, addressPeserta P, string namaEvent) {
     } else {
         cout << "Event tidak ditemukan" << endl;
     }
+}
+
+void endRegistrasiEvent(list &List, addressEvent E) {
+    if (jumlahPeserta(E) > 0) {
+        E->info.closed = true;
+    } else {
+        hapusEvent(List, E->info.namaEvent);
+    }
+}
+
+int waitingList(addressEvent E) {
+    addressPeserta P = E->nextPeserta;
+    int i = 0;
+    while (P != NULL) {
+        i++;
+        P = P->next;
+    }
+    if (i > E->info.quota) {
+        i = i - E->info.quota;
+    } else {
+        i = 0;
+    }
+    return i;
+}
+
+int jumlahCheckin(addressEvent E) {
+    addressPeserta P = E->nextPeserta;
+    int i = 0;
+    while (P != NULL) {
+        if (P->info.checkIn) {
+            i++;
+        }
+        P = P->next;
+    }
+    return i;
+}
+
+void showTicket(list List, addressPeserta P) {
+    addressEvent E = List.first;
+    int i = 0;
+    string namaEvent;
+    while (E != NULL) {
+        addressPeserta Q = E->nextPeserta;
+        i++;
+        while (Q != NULL) {
+            if (Q->info.namaPeserta == P->info.namaPeserta) {
+                cout << i << ". Nama Event  : " << E->info.namaEvent << endl;
+            }
+            Q = Q->next;
+        }
+        E = E->next;
+    }
+    cin.ignore(1000, '\n');
+    cout << "\n Masukkan nama event : "; getline(cin, namaEvent);
+    E = findEvent(List, namaEvent);
+    if (E != NULL) {
+        addressPeserta Q = E->nextPeserta;
+        while (Q != NULL) {
+            if (Q->info.namaPeserta == P->info.namaPeserta) {
+                cout << "Nama Event  : " << E->info.namaEvent << endl;
+                cout << "No. Peserta : " << Q->info.noPeserta << endl;
+                cout << "Jenis Tiket : " << Q->info.jenisTiket << endl;
+                cout << "No. Kursi   : " << Q->info.noTempatDuduk << endl;
+            }
+            Q = Q->next;
+        }
+    } else {
+        cout << "Event tidak ditemukan" << endl;
+    }
+}
+
+void showAllEvent(list List) {
+    addressEvent E = List.first;
+    while (E != NULL) {
+        if (E->info.closed == false) {
+            cout << "Nama event      : " << E->info.namaEvent << endl;
+            cout << "Jenis event     : " << E->info.jenisEvent << endl;
+            cout << "Tempat event    : " << E->info.tempatEvent << endl;
+            cout << "tanggalEvent    : " << E->info.tanggalEvent.tgl << " " << E->info.tanggalEvent.bulan << " " << E->info.tanggalEvent.tahun << endl;
+            cout << "Peserta checkin : " << jumlahCheckin(E) << endl;
+        }
+        E = E->next;
+    }
+}
+addressPeserta findPeserta(addressEvent E, string namaPeserta) {
+    addressPeserta P = E->nextPeserta;
+    while (P != NULL) {
+        if (P->info.namaPeserta == namaPeserta) {
+            break;
+        }
+        P = P->next;
+    }
+    return P;
 }
