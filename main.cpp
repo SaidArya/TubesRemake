@@ -17,6 +17,7 @@ int main(){
 				cout << "2. registasi event" << endl;
 				cout << "3. hapus event" << endl;
 				cout << "4. tampilkan event yang masih tersedia" << endl;
+				cout << "5. Batalkan registrasi event" << endl;
 				cout << "9. tampilkan semua data event" << endl;
 				cout << "0. logout" << endl;
 				cout << "Input : "; selectMenu = menu(List, P);
