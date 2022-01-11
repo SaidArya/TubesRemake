@@ -264,11 +264,6 @@ void insertLastPesertaEvent(addressEvent &E, addressPeserta &P) {
 
 void hapusEvent(list &List, string namaEvent) {
     addressEvent E = findEvent(List, namaEvent);
-    // while (E != NULL) {
-    //     if (E->info.namaEvent == namaEvent) {
-    //         break;
-    //     }
-    // }
     if (E == List.first) {
         deleteFirstEvent(List);
     } else if (E->next == NULL) {
