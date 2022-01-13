@@ -341,6 +341,7 @@ void registrasiEvent(list &List, addressEvent &E, addressPeserta &P) {
     Q->info.checkIn = false;
     insertLastPesertaEvent(E, Q);
 }
+
 void insertLastPesertaEvent(addressEvent &E, addressPeserta &P) {
     addressPeserta Q = E->nextPeserta;
     if (E->nextPeserta == NULL) {
@@ -426,7 +427,6 @@ void showEventTersedia(list List) {
         E = E->next;
     }
 }
-
 
 void cancelRegistrasiEvent(list &List, addressPeserta P) {
     string namaEvent;
@@ -618,6 +618,7 @@ void showAllEvent(list List) {
         E = E->next;
     }
 }
+
 addressPeserta findPeserta(addressEvent E, string namaPeserta) {
     addressPeserta P = E->nextPeserta;
     while (P != NULL) {
