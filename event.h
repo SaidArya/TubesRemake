@@ -72,11 +72,3 @@ void showAllEvent(list List);
 addressPeserta findPeserta(addressEvent E, string namaPeserta);
 
 #endif /* EVENT_H */
-
-/**
-    // *TODO: hapus registrasi
-    // *TODO: Masuk Event (checkIn)
-    *TODO: Mencari peserta di sebuah event
-    *TODO: akhiri event
-    // *TODO: Batalkan registrasi event
- **/
