@@ -1,4 +1,4 @@
-#include "event.h"
+#include "event.cpp"
 #include <ctime>
 
 int main(){
@@ -26,7 +26,7 @@ int main(){
 				cout << "11. cari peserta di event" << endl;
 				cout << "0. logout" << endl;
 				cout << "Input : "; selectMenu = menu(List, P);
-				if (selectMenu == 0) {
+				if (selectMenu == -1) {
 					P = NULL;
 					login = false;
 					break;
