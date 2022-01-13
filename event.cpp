@@ -261,7 +261,7 @@ int menu(list &List, addressPeserta P) {
             cout << "Masukkan nama event : "; getline(cin, namaEvent);
             E = findEvent(List, namaEvent);
             if (E != NULL) {
-                // cin.ignore(1000, '\n');
+            
                 cout << "Masukkan nama peserta yang ingin dicari : "; getline(cin, namaPeserta);
                 aP = findPeserta(E, namaPeserta);
                 if (aP != NULL) {
@@ -463,7 +463,7 @@ void deletePeserta(list &List, addressEvent &E, addressPeserta P) {
         if (Q->info.namaPeserta == P->info.namaPeserta) {
             Z = Q;
         }
-        if (i == E->info.quota) {
+        if (i == E->info.quota && Q->next != NULL) {
             Q->next->info.noTempatDuduk = Z->info.noTempatDuduk;
             break;
         }
